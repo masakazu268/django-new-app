@@ -1,6 +1,12 @@
 from django import forms
+from .models import Post
 
-class PostForm(forms.Form):
-    title = forms.CharField(max_length=30, label="タイトル")
-    content = forms.CharField(label="本文", widget=forms.Textarea())
-    image = forms.ImageField(label="イメージ画像", required=False)
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'image']
+        labels = {
+            'title': 'タイトル',
+            'content': '本文',
+            'image': 'イメージ画像',
+        }

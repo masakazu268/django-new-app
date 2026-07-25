@@ -20,51 +20,39 @@ class PostDetailView(View):
         
 class CreatePostView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        form = PostForm(request.POST or None)
+        form = PostForm()
         return render(request, 'app/post_form.html', {
             'form': form
         })
 
     def post(self, request, *args, **kwargs):
-        form = PostForm(request.POST or None)
+        # フォームに POST と FILES を両方渡す
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            post_data = Post()
-            post_data.author = request.user
-            post_data.title = form.cleaned_data['title']
-            post_data.content = form.cleaned_data['content']
-            post_data.save()
+            post_data = form.save(commit=False) # まだ保存しない
+            post_data.author = request.user     # ログイン中の作者をセット
+            post_data.save()                    # タイトル・本文・画像を1回で保存！
             return redirect('post_detail', post_data.id)
             
         return render(request, 'app/post_form.html', {
             'form': form
         })
     
-# ↓ ここから修正（CreatePostView と同じ左端のラインに揃えました）
 class PostEditView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         post_data = Post.objects.get(id=self.kwargs['pk'])
-        form = PostForm(
-            request.POST or None, 
-            initial={
-                'title': post_data.title,
-                'content': post_data.content,
-                'image': post_data.image
-                
-            }
-        )
+        # ModelForm の場合は instance に既存データを渡します
+        form = PostForm(instance=post_data)
         return render(request, 'app/post_form.html', {
             'form': form
         })
         
     def post(self, request, *args, **kwargs):
-        form = PostForm(request.POST or None)
+        post_data = Post.objects.get(id=self.kwargs['pk'])
+        # instance を指定することで上書き更新になります
+        form = PostForm(request.POST, request.FILES, instance=post_data)
         if form.is_valid():
-            post_data = Post.objects.get(id=self.kwargs['pk'])
-            post_data.title = form.cleaned_data['title']
-            post_data.content = form.cleaned_data['content']
-            if request.FILES:
-                post_data.image = request.FILES.get('image')
-            post_data.save()
+            form.save() # 画像の差し替えも含めて1回で更新！
             return redirect('post_detail', self.kwargs['pk'])
             
         return render(request, 'app/post_form.html', {
@@ -72,14 +60,12 @@ class PostEditView(LoginRequiredMixin, View):
         })          
         
 class PostDeleteView(LoginRequiredMixin, View):
-    # ① 削除確認画面を表示する（GETリクエスト）
     def get(self, request, *args, **kwargs):
         post_data = Post.objects.get(id=self.kwargs['pk'])
         return render(request, 'app/post_delete.html', {
             'post_data': post_data
         })
     
-    # ② 実際に削除を実行する（POSTリクエスト）
     def post(self, request, *args, **kwargs):   
         post_data = Post.objects.get(id=self.kwargs['pk'])
         post_data.delete()
