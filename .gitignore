@@ -1,0 +1,33 @@
+# ==========================================
+# Django Standard .gitignore
+# ==========================================
+
+# 1. Python キャッシュファイル
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 2. 仮想環境（Virtual Environment）
+myvenv/
+venv/
+.venv/
+env/
+
+# 3. Django ローカルデータベース & バックアップ
+*.sqlite3
+db.sqlite3
+db 2.sqlite3
+db 3.sqlite3
+
+# 4. ユーザーアップロード画像等（メディア）
+/media/
+
+# 5. 環境変数・秘密情報ファイル
+.env
+.env.local
+local_settings.py
+
+# 6. エディタ・OS作成の不要ファイル
+.vscode/
+.idea/
+.DS_Store
