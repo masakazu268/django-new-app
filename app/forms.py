@@ -4,9 +4,4 @@ from .models import Post
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'image']
-        labels = {
-            'title': 'タイトル',
-            'content': '本文',
-            'image': 'イメージ画像',
-        }
+        fields = ['title', 'category', 'content', 'image']

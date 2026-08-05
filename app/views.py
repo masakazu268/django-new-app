@@ -26,12 +26,11 @@ class CreatePostView(LoginRequiredMixin, View):
         })
 
     def post(self, request, *args, **kwargs):
-        # フォームに POST と FILES を両方渡す
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            post_data = form.save(commit=False) # まだ保存しない
-            post_data.author = request.user     # ログイン中の作者をセット
-            post_data.save()                    # タイトル・本文・画像を1回で保存！
+            post_data = form.save(commit=False)
+            post_data.author = request.user
+            post_data.save()
             return redirect('post_detail', post_data.id)
             
         return render(request, 'app/post_form.html', {
@@ -41,7 +40,6 @@ class CreatePostView(LoginRequiredMixin, View):
 class PostEditView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         post_data = Post.objects.get(id=self.kwargs['pk'])
-        # ModelForm の場合は instance に既存データを渡します
         form = PostForm(instance=post_data)
         return render(request, 'app/post_form.html', {
             'form': form
@@ -49,10 +47,9 @@ class PostEditView(LoginRequiredMixin, View):
         
     def post(self, request, *args, **kwargs):
         post_data = Post.objects.get(id=self.kwargs['pk'])
-        # instance を指定することで上書き更新になります
         form = PostForm(request.POST, request.FILES, instance=post_data)
         if form.is_valid():
-            form.save() # 画像の差し替えも含めて1回で更新！
+            form.save()
             return redirect('post_detail', self.kwargs['pk'])
             
         return render(request, 'app/post_form.html', {
