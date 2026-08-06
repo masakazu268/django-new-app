@@ -11,3 +11,4 @@ cloudinary==1.45.0
 django-cloudinary-storage==0.3.0
 django-widget-tweaks==1.5.1
 django-allauth==65.18.0
+Pillow==11.0.0
