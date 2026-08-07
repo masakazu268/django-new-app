@@ -4,7 +4,8 @@ set -o errexit
 
 pip install -r requirements.txt
 
-python manage.py collectstatic --no-input
+# --clear を追加して古い静的ファイルをクリア
+python manage.py collectstatic --no-input --clear
 python manage.py makemigrations
 python manage.py migrate
 
