@@ -34,6 +34,12 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = ['*']
+
+# ── Render のドメインを信頼できる送信元として登録（ここを追加） ──
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://django-new-app-2.onrender.com',
+]
     
 
 
