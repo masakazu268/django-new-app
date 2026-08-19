@@ -108,13 +108,23 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # DATABASE_URL環境変数がない場合は、ローカルのSQLiteを使う（開発用）
+#         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+#         conn_max_age=600,
+#     )
+# }
+
 DATABASES = {
     'default': dj_database_url.config(
-        # DATABASE_URL環境変数がない場合は、ローカルのSQLiteを使う（開発用）
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
+        ssl_require=True
     )
 }
+
+
 
 # 本番環境（DATABASE_URLが存在する場合）のみ、PostgreSQL用のSSL設定を明示的に上書きする
 if os.environ.get('DATABASE_URL'):
@@ -201,3 +211,16 @@ STATIC_URL = '/static/'
 # 以下を追加・編集
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Cloudinary Credential 設定
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+# メディアファイル（画像）の保存先をCloudinaryに変更
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# メディアファイルのURL設定
+MEDIA_URL = '/media/'
