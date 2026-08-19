@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 import dj_database_url
 from pathlib import Path
-import dotenv  # ← 追加
 
-env_path = Path(__file__).resolve().parent.parent / '.env'
-dotenv.load_dotenv(dotenv_path=env_path)
+
+# env_path = Path(__file__).resolve().parent.parent / '.env'
+# dotenv.load_dotenv(dotenv_path=env_path)
 
 
 
